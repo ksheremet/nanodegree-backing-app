@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ch.sheremet.katarina.backingapp.R;
 import ch.sheremet.katarina.backingapp.model.Recipe;
 
@@ -34,7 +36,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
-        // TODO
+        // TODO: try glide
         if (!mRecipeList.get(position).getImage().isEmpty()) {
             Picasso.get()
                     .load(mRecipeList.get(position).getImage())
@@ -56,13 +58,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     class RecipeViewHolder extends RecyclerView.ViewHolder{
 
+        @BindView(R.id.recipe_image_view)
         ImageView mRecipeImage;
+        @BindView(R.id.recipe_text_view)
         TextView mRecipeName;
 
-        public RecipeViewHolder(View itemView) {
+        RecipeViewHolder(View itemView) {
             super(itemView);
-            mRecipeImage = itemView.findViewById(R.id.recipe_image_view);
-            mRecipeName = itemView.findViewById(R.id.recipe_text_view);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

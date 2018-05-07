@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
     private RecipeListFragment mRecipesFragment;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // TODO: use async task loader
+    // TODO: consider to move to fragment
     class RecipeAsyncTask extends AsyncTask<Void, Void, List<Recipe>> {
 
         @Override

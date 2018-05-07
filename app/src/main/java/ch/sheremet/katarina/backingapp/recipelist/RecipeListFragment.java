@@ -1,5 +1,6 @@
 package ch.sheremet.katarina.backingapp.recipelist;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,7 +22,7 @@ public class RecipeListFragment extends Fragment {
 
     private List<Recipe> mRecipeList;
     @BindView(R.id.recipe_recycler_view)
-    private RecyclerView mRecipeRecyclerView;
+    RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mRecipeAdapter;
 
     // Constructor for initiating fragment
@@ -35,14 +36,19 @@ public class RecipeListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // TODO: init for callback;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-        //ButterKnife.bind(rootView);
-        mRecipeRecyclerView = rootView.findViewById(R.id.recipe_recycler_view);
-        // TODO
-        GridLayoutManager layoutManager = new GridLayoutManager(inflater.getContext(), 1);
+        ButterKnife.bind(this, rootView);
+        System.out.println("Recycler view = " + mRecipeRecyclerView);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
         mRecipeRecyclerView.setLayoutManager(layoutManager);
         mRecipeRecyclerView.setHasFixedSize(true);
         mRecipeAdapter = new RecipeAdapter();
