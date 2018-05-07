@@ -1,6 +1,7 @@
 package ch.sheremet.katarina.backingapp.recipelist;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,30 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.sheremet.katarina.backingapp.R;
 import ch.sheremet.katarina.backingapp.model.Recipe;
+import ch.sheremet.katarina.backingapp.utilities.NetworkUtil;
+import ch.sheremet.katarina.backingapp.utilities.RecipeParseJsonUtil;
 
 public class RecipeListFragment extends Fragment {
 
     @BindView(R.id.recipe_recycler_view)
     RecyclerView mRecipeRecyclerView;
-    private List<Recipe> mRecipeList;
     private RecipeAdapter mRecipeAdapter;
     private IOnRecipeSelectedListener mIOnRecipeSelectedListener;
 
     // Constructor for initiating fragment
     public RecipeListFragment() {
-    }
-
-    public void setRecipeList(final List<Recipe> recipeList) {
-        this.mRecipeList = recipeList;
-        if (mRecipeAdapter != null) {
-            mRecipeAdapter.setRecipeList(mRecipeList);
-        }
     }
 
     @Override
@@ -59,7 +55,27 @@ public class RecipeListFragment extends Fragment {
         mRecipeRecyclerView.setHasFixedSize(true);
         mRecipeAdapter = new RecipeAdapter(mIOnRecipeSelectedListener);
         mRecipeRecyclerView.setAdapter(mRecipeAdapter);
-        mRecipeAdapter.setRecipeList(mRecipeList);
+        new RecipeAsyncTask().execute();
         return rootView;
+    }
+
+    // TODO: use async task loader
+    class RecipeAsyncTask extends AsyncTask<Void, Void, List<Recipe>> {
+
+        @Override
+        protected List<Recipe> doInBackground(Void... voids) {
+            try {
+                return RecipeParseJsonUtil.parseRecipes(NetworkUtil.getResponseFromHttpUrl());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Recipe> recipes) {
+            super.onPostExecute(recipes);
+            mRecipeAdapter.setRecipeList(recipes);
+        }
     }
 }
