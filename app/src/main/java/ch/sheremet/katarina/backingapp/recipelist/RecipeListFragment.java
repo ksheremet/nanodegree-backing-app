@@ -53,7 +53,8 @@ public class RecipeListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
         ButterKnife.bind(this, rootView);
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(),
+                getResources().getInteger(R.integer.recipe_grid_span_count));
         mRecipeRecyclerView.setLayoutManager(layoutManager);
         mRecipeRecyclerView.setHasFixedSize(true);
         mRecipeAdapter = new RecipeAdapter(mIOnRecipeSelectedListener);

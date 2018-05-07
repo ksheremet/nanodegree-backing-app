@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements IOnRecipeSelected
     }
 
     // TODO: use async task loader
-    // TODO: consider to move to fragment
+    // TODO: consider to move in fragment
     class RecipeAsyncTask extends AsyncTask<Void, Void, List<Recipe>> {
 
         @Override
