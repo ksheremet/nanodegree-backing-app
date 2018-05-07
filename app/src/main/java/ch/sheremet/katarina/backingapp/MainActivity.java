@@ -4,19 +4,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.sheremet.katarina.backingapp.model.Recipe;
+import ch.sheremet.katarina.backingapp.recipelist.IOnRecipeSelectedListener;
 import ch.sheremet.katarina.backingapp.recipelist.RecipeListFragment;
 import ch.sheremet.katarina.backingapp.utilities.NetworkUtil;
 import ch.sheremet.katarina.backingapp.utilities.RecipeParseJsonUtil;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IOnRecipeSelectedListener {
 
     private RecipeListFragment mRecipesFragment;
 
@@ -39,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         new RecipeAsyncTask().execute();
+    }
+
+    @Override
+    public void onRecipeClick(Recipe recipe) {
+        System.out.println("Recipe:" + recipe);
     }
 
     // TODO: use async task loader

@@ -1,6 +1,7 @@
 package ch.sheremet.katarina.backingapp.recipelist;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,14 @@ import butterknife.ButterKnife;
 import ch.sheremet.katarina.backingapp.R;
 import ch.sheremet.katarina.backingapp.model.Recipe;
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>{
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private List<Recipe> mRecipeList;
+    private IOnRecipeSelectedListener mIOnRecipeSelectedListener;
+
+    RecipeAdapter(IOnRecipeSelectedListener IOnRecipeSelectedListener) {
+        this.mIOnRecipeSelectedListener = IOnRecipeSelectedListener;
+    }
 
     public void setRecipeList(List<Recipe> recipeList) {
         this.mRecipeList = recipeList;
@@ -35,8 +41,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
-        // TODO: try glide
+    public void onBindViewHolder(@NonNull final RecipeViewHolder holder, final int position) {
         if (!mRecipeList.get(position).getImage().isEmpty()) {
             Picasso.get()
                     .load(mRecipeList.get(position).getImage())
@@ -45,7 +50,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                     .into(holder.mRecipeImage);
         }
         holder.mRecipeName.setText(mRecipeList.get(position).getName());
-        }
+        holder.mRecipeCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIOnRecipeSelectedListener.onRecipeClick(mRecipeList.get(holder.getAdapterPosition()));
+            }
+        });
+    }
 
     @Override
     public int getItemCount() {
@@ -56,12 +67,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
     }
 
-    class RecipeViewHolder extends RecyclerView.ViewHolder{
+    class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.recipe_image_view)
         ImageView mRecipeImage;
         @BindView(R.id.recipe_text_view)
         TextView mRecipeName;
+        @BindView(R.id.recipe_card_view)
+        CardView mRecipeCardView;
 
         RecipeViewHolder(View itemView) {
             super(itemView);

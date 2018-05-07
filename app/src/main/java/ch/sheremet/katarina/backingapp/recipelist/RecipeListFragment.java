@@ -20,10 +20,11 @@ import ch.sheremet.katarina.backingapp.model.Recipe;
 
 public class RecipeListFragment extends Fragment {
 
-    private List<Recipe> mRecipeList;
     @BindView(R.id.recipe_recycler_view)
     RecyclerView mRecipeRecyclerView;
+    private List<Recipe> mRecipeList;
     private RecipeAdapter mRecipeAdapter;
+    private IOnRecipeSelectedListener mIOnRecipeSelectedListener;
 
     // Constructor for initiating fragment
     public RecipeListFragment() {
@@ -39,7 +40,12 @@ public class RecipeListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        // TODO: init for callback;
+        try {
+            mIOnRecipeSelectedListener = (IOnRecipeSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement IOnRecipeSelectedListener");
+        }
     }
 
     @Nullable
@@ -47,11 +53,10 @@ public class RecipeListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
         ButterKnife.bind(this, rootView);
-        System.out.println("Recycler view = " + mRecipeRecyclerView);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
         mRecipeRecyclerView.setLayoutManager(layoutManager);
         mRecipeRecyclerView.setHasFixedSize(true);
-        mRecipeAdapter = new RecipeAdapter();
+        mRecipeAdapter = new RecipeAdapter(mIOnRecipeSelectedListener);
         mRecipeRecyclerView.setAdapter(mRecipeAdapter);
         mRecipeAdapter.setRecipeList(mRecipeList);
         return rootView;
