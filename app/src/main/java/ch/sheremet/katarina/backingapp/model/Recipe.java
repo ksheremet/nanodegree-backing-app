@@ -1,14 +1,44 @@
 package ch.sheremet.katarina.backingapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Parcelable {
     private int mId;
     private String mName;
     private List<Ingredient> mIngredients;
     private List<BakingStep> mBakingSteps;
     private int mServings;
     private String mImage;
+
+    public Recipe() {
+    }
+
+    protected Recipe(Parcel in) {
+        mId = in.readInt();
+        mName = in.readString();
+        mServings = in.readInt();
+        mImage = in.readString();
+        mIngredients = new ArrayList<>();
+        in.readList(mIngredients, Ingredient.class.getClassLoader());
+        mBakingSteps = new ArrayList<>();
+        in.readList(mBakingSteps, BakingStep.class.getClassLoader());
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
 
     public int getId() {
         return mId;
@@ -68,5 +98,20 @@ public class Recipe {
                 .append(", mServings=").append(mServings)
                 .append(", mImage='").append(mImage).append('\'')
                 .append('}').toString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeString(mName);
+        dest.writeInt(mServings);
+        dest.writeString(mImage);
+        dest.writeList(mIngredients);
+        dest.writeList(mBakingSteps);
     }
 }

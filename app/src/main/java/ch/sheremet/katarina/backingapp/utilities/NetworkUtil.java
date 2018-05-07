@@ -24,8 +24,7 @@ public class NetworkUtil {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                // TODO: check
-                .url(new URL(Uri.parse(BASE_URL).buildUpon().toString()))
+                .url(new URL(buildBaseUrl().toString()))
                 .build();
 
         Response response = client.newCall(request).execute();

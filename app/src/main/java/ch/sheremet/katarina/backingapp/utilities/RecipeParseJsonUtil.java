@@ -1,6 +1,5 @@
 package ch.sheremet.katarina.backingapp.utilities;
 
-import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -89,6 +88,7 @@ public class RecipeParseJsonUtil {
                 bakingStep.setThumbnailURL(backingStepJsonObject.getString(STEP_THUMBNAIL_URL));
             }
 
+            bakingSteps.add(bakingStep);
             // TODO: check
            /* String mimeType = getMimeType(this, Uri.parse(thumbnailUrl));
             if (mimeType.startsWith("video/")){
@@ -106,10 +106,14 @@ public class RecipeParseJsonUtil {
             JSONObject ingredientJsonObject = ingredientsJsonArray.getJSONObject(i);
             if (ingredientJsonObject.has(INGREDIENT_QUANTITY)) {
                 ingredient.setQuantity(ingredientJsonObject.getInt(INGREDIENT_QUANTITY));
-                ingredient.setMeasure(ingredientJsonObject.getString(INGREDIENT_MEASURE));
-                ingredient.setIngredientName(ingredientJsonObject.getString(INGREDIENT_NAME));
-                ingredients.add(ingredient);
             }
+            if (ingredientJsonObject.has(INGREDIENT_MEASURE)) {
+                ingredient.setMeasure(ingredientJsonObject.getString(INGREDIENT_MEASURE));
+            }
+            if (ingredientJsonObject.has(INGREDIENT_NAME)) {
+                ingredient.setIngredientName(ingredientJsonObject.getString(INGREDIENT_NAME));
+            }
+            ingredients.add(ingredient);
         }
         return ingredients;
     }
