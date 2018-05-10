@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ch.sheremet.katarina.backingapp.R;
 import ch.sheremet.katarina.backingapp.model.Recipe;
 
@@ -35,10 +38,16 @@ public class RecipeStepsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         mRecipe = getIntent().getParcelableExtra(RECIPE_PARAM);
-        Log.d(TAG, mRecipe.getBakingSteps().toString());
+        Log.d(TAG, "Rotation");
         setTitle(mRecipe.getName());
         if (savedInstanceState == null) {
+            List<String> recipeStepsDesc = new ArrayList<>();
+            recipeStepsDesc.add("Recipe Ingredients");
+            for(int i = 0; i<mRecipe.getBakingSteps().size(); i++) {
+                recipeStepsDesc.add(mRecipe.getBakingSteps().get(i).getShortDescription());
+            }
             RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
+            recipeStepsFragment.setRecipeStepsDesc(recipeStepsDesc);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.recipe_steps_fragment, recipeStepsFragment).commit();

@@ -21,7 +21,8 @@
         </activity>
         <activity
             android:name=".recipesteps.RecipeStepsActivity"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
