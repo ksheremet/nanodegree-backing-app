@@ -14,7 +14,7 @@ import java.util.List;
 import ch.sheremet.katarina.backingapp.R;
 import ch.sheremet.katarina.backingapp.model.Recipe;
 
-public class RecipeStepsActivity extends AppCompatActivity {
+public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeStepSelectedListener {
 
     public static final String RECIPE_PARAM = "recipe";
     private static final String TAG = RecipeStepsActivity.class.getSimpleName();
@@ -43,7 +43,7 @@ public class RecipeStepsActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             List<String> recipeStepsDesc = new ArrayList<>();
             recipeStepsDesc.add("Recipe Ingredients");
-            for(int i = 0; i<mRecipe.getBakingSteps().size(); i++) {
+            for (int i = 0; i < mRecipe.getBakingSteps().size(); i++) {
                 recipeStepsDesc.add(mRecipe.getBakingSteps().get(i).getShortDescription());
             }
             RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
@@ -52,5 +52,14 @@ public class RecipeStepsActivity extends AppCompatActivity {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.recipe_steps_fragment, recipeStepsFragment).commit();
         }
+    }
+
+    @Override
+    public void onRecipeStepClick(int i) {
+        if (i == 0) {
+            Log.d(TAG, "Recipe Ingredients");
+            return;
+        }
+        Log.d(TAG, mRecipe.getBakingSteps().get(i - 1).getShortDescription());
     }
 }
