@@ -41,7 +41,10 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
         mRecipe = getIntent().getParcelableExtra(RECIPE_PARAM);
         setTitle(mRecipe.getName());
 
-        if (findViewById(R.id.recipe_instruction_fragment) != null && savedInstanceState == null) {
+        if (findViewById(R.id.recipe_instruction_fragment) != null) {
+            mTwoPane = true;
+        }
+        if (mTwoPane && savedInstanceState == null) {
             mTwoPane = true;
             RecipeStepInstructionFragment instructionFragment = new RecipeStepInstructionFragment();
             instructionFragment.setBackingStep(mRecipe.getBakingSteps().get(0));
