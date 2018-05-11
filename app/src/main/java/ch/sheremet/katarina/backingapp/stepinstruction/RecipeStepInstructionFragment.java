@@ -19,12 +19,16 @@ import ch.sheremet.katarina.backingapp.recipesteps.IOnRecipeStepSelectedListener
 
 public class RecipeStepInstructionFragment extends Fragment {
 
+    private static final String BAKING_STEP = "backing-step";
+
     private BakingStep mBackingStep;
     private IOnRecipeStepSelectedListener mOnRecipeStepSelectedListener;
     @BindView(R.id.recipe_step_instruction_textview)
     TextView mRecipeInstructionTextView;
+    @Nullable
     @BindView(R.id.previous_step_button)
     Button mPreviousStepButton;
+    @Nullable
     @BindView(R.id.next_step_button)
     Button mNextStepButton;
 
@@ -48,20 +52,35 @@ public class RecipeStepInstructionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step_instruction, container, false);
         ButterKnife.bind(this, rootView);
-        mRecipeInstructionTextView.setText(mBackingStep.getDescription());
-        mNextStepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mOnRecipeStepSelectedListener.nextStep();
-            }
-        });
 
-        mPreviousStepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mOnRecipeStepSelectedListener.previousStep();
-            }
-        });
+        if (savedInstanceState != null) {
+            mBackingStep = savedInstanceState.getParcelable(BAKING_STEP);
+        }
+
+        mRecipeInstructionTextView.setText(mBackingStep.getDescription());
+        if (mNextStepButton != null) {
+            mNextStepButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnRecipeStepSelectedListener.nextStep();
+                }
+            });
+        }
+        if (mPreviousStepButton != null) {
+            mPreviousStepButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnRecipeStepSelectedListener.previousStep();
+                }
+            });
+        }
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BAKING_STEP, mBackingStep);
+
     }
 }

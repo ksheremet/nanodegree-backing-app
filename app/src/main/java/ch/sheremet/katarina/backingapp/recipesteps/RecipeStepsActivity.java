@@ -3,8 +3,6 @@ package ch.sheremet.katarina.backingapp.recipesteps;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -22,6 +20,7 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
 
     private Recipe mRecipe;
     private int mCurrentRecipeStep;
+    private boolean mTwoPane = false;
 
     public static void startActivity(Context context, Recipe recipe) {
         Intent recipeStepsIntent = new Intent(context, RecipeStepsActivity.class);
@@ -41,6 +40,17 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
         }
         mRecipe = getIntent().getParcelableExtra(RECIPE_PARAM);
         setTitle(mRecipe.getName());
+
+        if (findViewById(R.id.recipe_instruction_fragment) != null && savedInstanceState == null) {
+            mTwoPane = true;
+            RecipeStepInstructionFragment instructionFragment = new RecipeStepInstructionFragment();
+            instructionFragment.setBackingStep(mRecipe.getBakingSteps().get(0));
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.recipe_instruction_fragment, instructionFragment)
+                    .commit();
+        }
+
         if (savedInstanceState == null) {
             List<String> recipeStepsDesc = new ArrayList<>();
             recipeStepsDesc.add("Recipe Ingredients");
@@ -49,9 +59,10 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
             }
             RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
             recipeStepsFragment.setRecipeStepsDesc(recipeStepsDesc);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.recipe_steps_fragment, recipeStepsFragment).commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.recipe_steps_fragment, recipeStepsFragment)
+                    .commit();
         }
     }
 
@@ -73,7 +84,6 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
             mCurrentRecipeStep++;
             showRecipeStep();
         }
-
     }
 
     @Override
@@ -82,22 +92,29 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
             mCurrentRecipeStep--;
             showRecipeStep();
         }
-
     }
 
     private void showRecipeStep() {
         RecipeStepInstructionFragment instructionFragment = new RecipeStepInstructionFragment();
-        instructionFragment.setBackingStep(mRecipe.getBakingSteps().get(mCurrentRecipeStep-1));
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.recipe_steps_fragment, instructionFragment)
-                .addToBackStack(null)
-                .commit();
+        instructionFragment.setBackingStep(mRecipe.getBakingSteps().get(mCurrentRecipeStep - 1));
+        if (mTwoPane) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.recipe_instruction_fragment, instructionFragment)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.recipe_steps_fragment, instructionFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount()>0) {
+        Log.d(TAG, String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
