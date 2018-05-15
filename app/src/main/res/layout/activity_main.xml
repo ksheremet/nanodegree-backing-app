@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-   <fragment
-       android:id="@+id/recipe_list_fragment"
-       android:name="ch.sheremet.katarina.backingapp.recipelist.RecipeListFragment"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"/>
+    <fragment
+        android:id="@+id/recipe_list_fragment"
+        android:name="ch.sheremet.katarina.backingapp.recipelist.RecipeListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

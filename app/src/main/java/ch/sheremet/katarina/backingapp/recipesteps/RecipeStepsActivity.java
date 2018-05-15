@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +84,10 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
 
     @Override
     public void nextStep() {
-        if (mCurrentRecipeStep <= mRecipe.getBakingSteps().size()) {
+        Log.d(TAG, "Current Recipe Step: " + mCurrentRecipeStep);
+        if (mCurrentRecipeStep < mRecipe.getBakingSteps().size()) {
             mCurrentRecipeStep++;
+            Log.d(TAG, "Next Recipe Step: " + mCurrentRecipeStep);
             showRecipeStep();
         }
     }
@@ -116,6 +119,19 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
 
     @Override
     public void onBackPressed() {
+        navigateUp();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            navigateUp();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void navigateUp() {
         Log.d(TAG, String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
