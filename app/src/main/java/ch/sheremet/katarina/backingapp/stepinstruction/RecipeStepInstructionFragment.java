@@ -1,6 +1,8 @@
 package ch.sheremet.katarina.backingapp.stepinstruction;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.sheremet.katarina.backingapp.R;
@@ -20,9 +32,14 @@ import ch.sheremet.katarina.backingapp.recipesteps.IOnRecipeStepSelectedListener
 public class RecipeStepInstructionFragment extends Fragment {
 
     private static final String BAKING_STEP = "backing-step";
+    private static final String PLAYBACK_POSITION = "playback-position";
+    private static final String PLAY_WHEN_READY = "play-when-ready";
+    private static final String CURRENT_WINDOW = "current-window";
+    private static final String TAG = RecipeStepInstructionFragment.class.getSimpleName();
 
     private BakingStep mBackingStep;
     private IOnRecipeStepSelectedListener mOnRecipeStepSelectedListener;
+    @Nullable
     @BindView(R.id.recipe_step_instruction_textview)
     TextView mRecipeInstructionTextView;
     @Nullable
@@ -31,6 +48,13 @@ public class RecipeStepInstructionFragment extends Fragment {
     @Nullable
     @BindView(R.id.next_step_button)
     Button mNextStepButton;
+    @BindView(R.id.exoplayer_view)
+    PlayerView mPlayerView;
+    private SimpleExoPlayer mExoPlayer;
+    private long mPlaybackPosition = 0;
+    private boolean mPlayWhenReady = true;
+    private int mCurrentWindow = 0;
+
 
     @Override
     public void onAttach(Context context) {
@@ -55,9 +79,14 @@ public class RecipeStepInstructionFragment extends Fragment {
 
         if (savedInstanceState != null) {
             mBackingStep = savedInstanceState.getParcelable(BAKING_STEP);
+            mPlaybackPosition = savedInstanceState.getLong(PLAYBACK_POSITION);
+            mPlayWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY);
+            mCurrentWindow = savedInstanceState.getInt(CURRENT_WINDOW);
         }
 
-        mRecipeInstructionTextView.setText(mBackingStep.getDescription());
+        if (mRecipeInstructionTextView != null) {
+            mRecipeInstructionTextView.setText(mBackingStep.getDescription());
+        }
         if (mNextStepButton != null) {
             mNextStepButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,9 +107,61 @@ public class RecipeStepInstructionFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (mExoPlayer == null) {
+            if (mBackingStep.getVideoURL().isEmpty()) {
+                // TODO: set default picture
+                mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.cupcake));
+            } else {
+                initializePlayer(Uri.parse(mBackingStep.getVideoURL()));
+            }
+        }
+    }
+
+    // https://google.github.io/ExoPlayer/guide.html
+    // New codelab about ExoPlayer: https://codelabs.developers.google.com/codelabs/exoplayer-intro/#0
+    private void initializePlayer(Uri uri) {
+        mExoPlayer = ExoPlayerFactory.newSimpleInstance(
+                new DefaultRenderersFactory(getContext()),
+                new DefaultTrackSelector(), new DefaultLoadControl());
+
+        mPlayerView.setPlayer(mExoPlayer);
+
+        mExoPlayer.setPlayWhenReady(mPlayWhenReady);
+        mExoPlayer.seekTo(mCurrentWindow, mPlaybackPosition);
+        MediaSource mediaSource = buildMediaSource(uri);
+        mExoPlayer.prepare(mediaSource, false, false);
+    }
+
+    private MediaSource buildMediaSource(Uri uri) {
+        return new ExtractorMediaSource.Factory(
+                new DefaultHttpDataSourceFactory(getString(R.string.app_name))).
+                createMediaSource(uri);
+    }
+
+    private void releasePlayer() {
+        mExoPlayer.stop();
+        mExoPlayer.release();
+        mExoPlayer = null;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mExoPlayer != null) {
+            releasePlayer();
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(BAKING_STEP, mBackingStep);
-
+        if (mExoPlayer != null) {
+            outState.putLong(PLAYBACK_POSITION, mExoPlayer.getCurrentPosition());
+            outState.putBoolean(PLAY_WHEN_READY, mExoPlayer.getPlayWhenReady());
+            outState.putInt(CURRENT_WINDOW, mExoPlayer.getCurrentWindowIndex());
+        }
     }
 }
