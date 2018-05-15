@@ -3,22 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:orientation="vertical">
 
     <!-- SimpleExoPlayerView is deprecated
      https://google.github.io/ExoPlayer/doc/reference/com/google/android/exoplayer2/ui/SimpleExoPlayerView.html-->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.6">
+        android:layout_height="280dp">
         <!-- SimpleExoPlayerView is deprecated
          https://google.github.io/ExoPlayer/doc/reference/com/google/android/exoplayer2/ui/SimpleExoPlayerView.html-->
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/exoplayer_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:resize_mode="fit" />
+            app:resize_mode="fill" />
 
         <ImageView
             android:id="@+id/default_cake_imageview"
