@@ -1,7 +1,6 @@
 package ch.sheremet.katarina.backingapp.stepinstruction;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -22,6 +22,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +51,8 @@ public class RecipeStepInstructionFragment extends Fragment {
     Button mNextStepButton;
     @BindView(R.id.exoplayer_view)
     PlayerView mPlayerView;
+    @BindView(R.id.default_cake_imageview)
+    ImageView mDefaultCakeImageView;
     private SimpleExoPlayer mExoPlayer;
     private long mPlaybackPosition = 0;
     private boolean mPlayWhenReady = true;
@@ -111,8 +114,17 @@ public class RecipeStepInstructionFragment extends Fragment {
         super.onStart();
         if (mExoPlayer == null) {
             if (mBackingStep.getVideoURL().isEmpty()) {
-                // TODO: set default picture
-                mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.cupcake));
+                mPlayerView.setVisibility(View.INVISIBLE);
+                if (mBackingStep.getThumbnailURL().isEmpty()) {
+                    mDefaultCakeImageView.setImageDrawable(getResources().getDrawable(R.drawable.cupcake));
+                } else {
+                    Picasso
+                            .get()
+                            .load(mBackingStep.getThumbnailURL())
+                            .placeholder(R.drawable.cupcake)
+                            .error(R.drawable.cupcake)
+                            .into(mDefaultCakeImageView);
+                }
             } else {
                 initializePlayer(Uri.parse(mBackingStep.getVideoURL()));
             }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,7 @@ import ch.sheremet.katarina.backingapp.stepinstruction.RecipeStepInstructionFrag
 public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeStepSelectedListener {
 
     public static final String RECIPE_PARAM = "recipe";
+    public static final String CURRENT_RECIPE_STEP = "current-recipe-step";
     private static final String TAG = RecipeStepsActivity.class.getSimpleName();
 
     private Recipe mRecipe;
@@ -67,7 +67,15 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
                     .beginTransaction()
                     .add(R.id.recipe_steps_fragment, recipeStepsFragment)
                     .commit();
+        } else {
+            mCurrentRecipeStep = savedInstanceState.getInt(CURRENT_RECIPE_STEP);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_RECIPE_STEP, mCurrentRecipeStep);
     }
 
     @Override
@@ -120,15 +128,6 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
     @Override
     public void onBackPressed() {
         navigateUp();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            navigateUp();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void navigateUp() {
