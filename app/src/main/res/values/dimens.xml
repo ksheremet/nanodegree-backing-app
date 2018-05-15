@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="textTitleSize">24sp</dimen>
+    <dimen name="textSecondarySize">16sp</dimen>
 
     <dimen name="cardElevation">8dp</dimen>
     <dimen name="cardCornerRadius">4dp</dimen>
     <dimen name="cardMargin">10dp</dimen>
     <dimen name="buttonPadding">20dp</dimen>
+
+    <dimen name="borderMargin">8dp</dimen>
 </resources>

@@ -18,7 +18,9 @@
     <TextView
         android:id="@+id/recipe_step_instruction_textview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/borderMargin"
+        style="@style/TextSecondaryStyle"/>
 
     <LinearLayout
         android:layout_width="match_parent"

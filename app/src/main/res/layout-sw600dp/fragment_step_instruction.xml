@@ -13,7 +13,9 @@
         android:layout_width="match_parent"
         app:resize_mode="fit"
         android:layout_height="0dp"
-        android:layout_weight="0.5" />
+        android:layout_weight="0.5"
+        style="@style/TextSecondaryStyle"
+        android:layout_margin="@dimen/borderMargin"/>
 
     <TextView
         android:id="@+id/recipe_step_instruction_textview"
