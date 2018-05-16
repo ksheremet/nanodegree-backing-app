@@ -2,4 +2,6 @@
     <string name="app_name">Backing App</string>
     <string name="previous_step_button">Previous</string>
     <string name="next_step_button">Next</string>
+    <string name="add_widget">Add widget</string>
+    <string name="appwidget_text">test</string>
 </resources>
