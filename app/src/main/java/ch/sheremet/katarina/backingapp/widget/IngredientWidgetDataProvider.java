@@ -3,29 +3,35 @@ package ch.sheremet.katarina.backingapp.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+
+import ch.sheremet.katarina.backingapp.R;
 
 // Gets data
 public class IngredientWidgetDataProvider implements RemoteViewsService.RemoteViewsFactory {
 
-    List<String> collection = new ArrayList<>();
-    Context mContext;
-    Intent mIntent;
-
-    private void initData() {
-        collection.clear();
-        for (int i = 0; i < 10; i++) {
-            collection.add("List view:" + i);
-        }
-    }
+    private List<String> ingredients = new ArrayList<>();
+    private Context mContext;
+    private Intent mIntent;
 
     public IngredientWidgetDataProvider(Context context, Intent intent) {
         this.mContext = context;
         this.mIntent = intent;
+    }
+
+    private void initData() {
+        ingredients.clear();
+        SharedPreferences sharedPref = mContext
+                .getSharedPreferences(mContext.getString(R.string.preference_file_key),
+                        Context.MODE_PRIVATE);
+        ingredients = new ArrayList<>(sharedPref.getStringSet(mContext.getResources()
+                .getString(R.string.shared_pref_ingredient), new HashSet<String>()));
     }
 
     /**
@@ -62,7 +68,8 @@ public class IngredientWidgetDataProvider implements RemoteViewsService.RemoteVi
 
     @Override
     public int getCount() {
-        return collection.size();
+        if (ingredients == null) return 0;
+        return ingredients.size();
     }
 
     /**
@@ -76,7 +83,8 @@ public class IngredientWidgetDataProvider implements RemoteViewsService.RemoteVi
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews remoteView = new RemoteViews(mContext.getPackageName(), android.R.layout.simple_list_item_1);
-        remoteView.setTextViewText(android.R.id.text1, collection.get(position));
+        remoteView.setTextViewText(android.R.id.text1, ingredients.get(position));
+        remoteView.setOnClickFillInIntent(android.R.id.text1, new Intent());
         return remoteView;
     }
 

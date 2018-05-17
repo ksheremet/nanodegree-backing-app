@@ -2,14 +2,18 @@ package ch.sheremet.katarina.backingapp.recipesteps;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ch.sheremet.katarina.backingapp.R;
+import ch.sheremet.katarina.backingapp.model.Ingredient;
 import ch.sheremet.katarina.backingapp.model.Recipe;
 import ch.sheremet.katarina.backingapp.stepinstruction.RecipeStepInstructionFragment;
 
@@ -29,10 +33,28 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
         context.startActivity(recipeStepsIntent);
     }
 
+    private void saveLastSeenRecipeIngredients() {
+        // Save seen recipe to shared preferences
+        Set<String> ingredientsSet = new HashSet<>();
+        for (int i = 0; i < mRecipe.getIngredients().size(); i++) {
+            Ingredient recipeIngredient = mRecipe.getIngredients().get(i);
+            StringBuilder ingredientsBuilder = new StringBuilder(recipeIngredient.getIngredientName())
+                    .append(" ").append(recipeIngredient.getQuantity()).append(recipeIngredient.getMeasure());
+            ingredientsSet.add(ingredientsBuilder.toString());
+        }
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.share_pref_recipe_name), mRecipe.getName());
+        editor.putStringSet(getString(R.string.shared_pref_ingredient), ingredientsSet);
+        editor.apply();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_steps);
+
+
         if ((getIntent() == null) || (!getIntent().hasExtra(RECIPE_PARAM))) {
             finish();
         }
@@ -41,6 +63,7 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
         }
         mRecipe = getIntent().getParcelableExtra(RECIPE_PARAM);
         setTitle(mRecipe.getName());
+        saveLastSeenRecipeIngredients();
 
         if (findViewById(R.id.recipe_instruction_fragment) != null) {
             mTwoPane = true;
