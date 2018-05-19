@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import ch.sheremet.katarina.backingapp.R;
+import ch.sheremet.katarina.backingapp.ingredients.IngredientsFragment;
 import ch.sheremet.katarina.backingapp.model.Ingredient;
 import ch.sheremet.katarina.backingapp.model.Recipe;
 import ch.sheremet.katarina.backingapp.stepinstruction.RecipeStepInstructionFragment;
@@ -53,7 +54,6 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_steps);
-
 
         if ((getIntent() == null) || (!getIntent().hasExtra(RECIPE_PARAM))) {
             finish();
@@ -105,12 +105,28 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
     public void onRecipeStepClick(int i) {
         mCurrentRecipeStep = i;
         if (i == 0) {
-            //TODO(ksheremet): Start activity with ingredients
-            Log.d(TAG, "Recipe Ingredients");
+            showIngredients();
             return;
         }
         Log.d(TAG, mRecipe.getBakingSteps().get(i - 1).getShortDescription());
         showRecipeStep();
+    }
+
+    private void showIngredients() {
+        IngredientsFragment instructionFragment = new IngredientsFragment();
+        instructionFragment.setIngredients(mRecipe.getIngredients());
+        if (mTwoPane) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.recipe_instruction_fragment, instructionFragment)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.recipe_steps_fragment, instructionFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     @Override
