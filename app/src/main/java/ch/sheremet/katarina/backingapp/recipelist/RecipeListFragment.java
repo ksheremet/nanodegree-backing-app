@@ -17,7 +17,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ch.sheremet.katarina.backingapp.MainActivity;
 import ch.sheremet.katarina.backingapp.R;
+import ch.sheremet.katarina.backingapp.idlingresource.SimpleIdlingResource;
 import ch.sheremet.katarina.backingapp.model.Recipe;
 import ch.sheremet.katarina.backingapp.utilities.NetworkUtil;
 import ch.sheremet.katarina.backingapp.utilities.RecipeParseJsonUtil;
@@ -28,6 +30,7 @@ public class RecipeListFragment extends Fragment {
     RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mRecipeAdapter;
     private IOnRecipeSelectedListener mIOnRecipeSelectedListener;
+    private SimpleIdlingResource mIdleResource;
 
     // Constructor for initiating fragment
     public RecipeListFragment() {
@@ -38,6 +41,8 @@ public class RecipeListFragment extends Fragment {
         super.onAttach(context);
         try {
             mIOnRecipeSelectedListener = (IOnRecipeSelectedListener) context;
+            mIdleResource = (SimpleIdlingResource) ((MainActivity) getActivity()).getIdlingResource();
+            mIdleResource.setIdleState(false);
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() +
                     " must implement IOnRecipeSelectedListener");
@@ -76,6 +81,9 @@ public class RecipeListFragment extends Fragment {
         protected void onPostExecute(List<Recipe> recipes) {
             super.onPostExecute(recipes);
             mRecipeAdapter.setRecipeList(recipes);
+            if (mIdleResource != null) {
+                mIdleResource.setIdleState(true);
+            }
         }
     }
 }
