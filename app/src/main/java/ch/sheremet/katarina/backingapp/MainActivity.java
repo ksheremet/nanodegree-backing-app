@@ -43,4 +43,8 @@ public class MainActivity extends AppCompatActivity implements IOnRecipeSelected
         }
         return mIdlingResource;
     }
+
+    public IdlingResource getIdling() {
+        return mIdlingResource;
+    }
 }

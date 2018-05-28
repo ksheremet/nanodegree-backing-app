@@ -89,11 +89,6 @@ public class RecipeParseJsonUtil {
             }
 
             bakingSteps.add(bakingStep);
-            // TODO: check
-           /* String mimeType = getMimeType(this, Uri.parse(thumbnailUrl));
-            if (mimeType.startsWith("video/")){
-                // do the swap here
-            }*/
         }
         return bakingSteps;
 
