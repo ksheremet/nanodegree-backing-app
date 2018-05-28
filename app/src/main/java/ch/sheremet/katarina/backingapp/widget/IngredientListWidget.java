@@ -33,6 +33,7 @@ public class IngredientListWidget extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredient_list_widget);
         Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         String recipeName = getRecipeName(context);
         if (recipeName.equals(context.getString(R.string.app_name))) {

@@ -18,11 +18,9 @@ public class IngredientWidgetDataProvider implements RemoteViewsService.RemoteVi
 
     private List<String> ingredients = new ArrayList<>();
     private Context mContext;
-    private Intent mIntent;
 
-    public IngredientWidgetDataProvider(Context context, Intent intent) {
+    public IngredientWidgetDataProvider(Context context) {
         this.mContext = context;
-        this.mIntent = intent;
     }
 
     private void initData() {

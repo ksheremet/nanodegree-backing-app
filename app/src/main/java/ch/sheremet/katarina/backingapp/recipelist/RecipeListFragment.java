@@ -51,7 +51,7 @@ public class RecipeListFragment extends Fragment {
         public void onLoadFinished(@NonNull Loader<List<Recipe>> loader, List<Recipe> data) {
             if (data == null) {
                 Toast.makeText(getContext(),
-                        "Error occured fetching recipes. Try it later", Toast.LENGTH_SHORT).show();
+                        R.string.error_user_message, Toast.LENGTH_SHORT).show();
             } else {
                 mRecipeAdapter.setRecipeList(data);
             }

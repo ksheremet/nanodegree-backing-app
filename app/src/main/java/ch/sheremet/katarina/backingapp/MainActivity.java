@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements IOnRecipeSelected
         return mIdlingResource;
     }
 
+    // Getter for IdlingResource.
+    // Called from fragment
     public IdlingResource getIdling() {
         return mIdlingResource;
     }

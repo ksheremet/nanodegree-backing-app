@@ -59,7 +59,8 @@ public class RecipeTests {
     @Test
     public void testNutellaPieStepsLoaded() {
         onView(withText("Nutella Pie")).check(matches(isDisplayed())).perform(click());
-        onView(withText("Recipe Ingredients")).check(matches(isDisplayed()));
+        onView(withText(mActivityRule.getActivity().getString(R.string.recipe_igredients)))
+                .check(matches(isDisplayed()));
         onView(withText("Finishing Steps")).check(matches(isDisplayed()));
     }
 
@@ -82,7 +83,8 @@ public class RecipeTests {
             mActivityRule.getActivity()
                     .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             onView(withText("Nutella Pie")).check(matches(isDisplayed())).perform(click());
-            onView(withText("Recipe Introduction")).check(matches(isDisplayed())).perform(click());
+            onView(withText("Recipe Introduction"))
+                    .check(matches(isDisplayed())).perform(click());
             onView(withId(R.id.next_step_button)).check(doesNotExist());
             onView(withId(R.id.previous_step_button)).check(doesNotExist());
         }
@@ -104,7 +106,8 @@ public class RecipeTests {
     @Test
     public void testIngredientsIsShown() {
         onView(withText("Nutella Pie")).check(matches(isDisplayed())).perform(click());
-        onView(withText("Recipe Ingredients")).check(matches(isDisplayed())).perform(click());
+        onView(withText(mActivityRule.getActivity().getString(R.string.recipe_igredients)))
+                .check(matches(isDisplayed())).perform(click());
         onView(withText("salt")).check(matches(isDisplayed()));
     }
 

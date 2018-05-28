@@ -11,6 +11,6 @@ public class IngredientListWidgetService extends RemoteViewsService {
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         Log.d(TAG, "Return view factory");
 
-        return new IngredientWidgetDataProvider(this, intent);
+        return new IngredientWidgetDataProvider(this);
     }
 }

@@ -80,7 +80,7 @@ public class RecipeStepsActivity extends AppCompatActivity implements IOnRecipeS
 
         if (savedInstanceState == null) {
             List<String> recipeStepsDesc = new ArrayList<>();
-            recipeStepsDesc.add("Recipe Ingredients");
+            recipeStepsDesc.add(getString(R.string.recipe_igredients));
             for (int i = 0; i < mRecipe.getBakingSteps().size(); i++) {
                 recipeStepsDesc.add(mRecipe.getBakingSteps().get(i).getShortDescription());
             }
