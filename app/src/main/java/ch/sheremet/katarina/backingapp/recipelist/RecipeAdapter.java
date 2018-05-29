@@ -62,9 +62,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public int getItemCount() {
         if (mRecipeList == null) {
             return 0;
-        } else {
-            return mRecipeList.size();
         }
+        return mRecipeList.size();
     }
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {

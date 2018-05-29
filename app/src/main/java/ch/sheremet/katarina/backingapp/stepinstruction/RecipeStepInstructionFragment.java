@@ -79,7 +79,6 @@ public class RecipeStepInstructionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step_instruction, container, false);
         ButterKnife.bind(this, rootView);
-
         if (savedInstanceState != null) {
             mBackingStep = savedInstanceState.getParcelable(BAKING_STEP);
             mPlaybackPosition = savedInstanceState.getLong(PLAYBACK_POSITION);
@@ -162,6 +161,9 @@ public class RecipeStepInstructionFragment extends Fragment {
     public void onStop() {
         super.onStop();
         if (mExoPlayer != null) {
+            mPlaybackPosition = mExoPlayer.getCurrentPosition();
+            mPlayWhenReady = mExoPlayer.getPlayWhenReady();
+            mCurrentWindow = mExoPlayer.getCurrentWindowIndex();
             releasePlayer();
         }
     }
